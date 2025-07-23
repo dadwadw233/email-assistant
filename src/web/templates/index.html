@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Assistant Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .email-card {
+            border-left: 4px solid #007bff;
+            transition: box-shadow 0.3s;
+        }
+        .email-card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .importance-high {
+            border-left-color: #dc3545;
+        }
+        .importance-medium {
+            border-left-color: #ffc107;
+        }
+        .importance-low {
+            border-left-color: #28a745;
+        }
+        .category-work {
+            background-color: #e9ecef;
+        }
+        .category-personal {
+            background-color: #fff3cd;
+        }
+        .category-newsletter {
+            background-color: #d1ecf1;
+        }
+        .category-spam {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-4">Email Assistant Dashboard</h1>
+                <p class="lead">Manage and analyze your emails efficiently</p>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="config-info">
+                            <p>Loading configuration...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Accounts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="accounts-info">
+                            <p>Loading accounts...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <ul class="nav nav-tabs" id="emailTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="unprocessed-tab" data-bs-toggle="tab" data-bs-target="#unprocessed" type="button" role="tab">Unprocessed Emails</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="processed-tab" data-bs-toggle="tab" data-bs-target="#processed" type="button" role="tab">Processed Emails</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="emailTabsContent">
+                    <div class="tab-pane fade show active" id="unprocessed" role="tabpanel">
+                        <div class="mt-3" id="unprocessed-emails">
+                            <p>Loading unprocessed emails...</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="processed" role="tabpanel">
+                        <div class="mt-3" id="processed-emails">
+                            <p>Loading processed emails...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fetch and display configuration
+        fetch('/api/config')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const configHtml = `
+                        <p><strong>Name:</strong> ${data.config.app_name}</p>
+                        <p><strong>Version:</strong> ${data.config.version}</p>
+                        <p><strong>Log Level:</strong> ${data.config.log_level}</p>
+                        <p><strong>Check Interval:</strong> ${data.config.email_check_interval}s</p>
+                        <p><strong>Importance Threshold:</strong> ${data.config.importance_threshold}</p>
+                    `;
+                    document.getElementById('config-info').innerHTML = configHtml;
+                } else {
+                    document.getElementById('config-info').innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('config-info').innerHTML = `<p class="text-danger">Error loading configuration: ${error}</p>`;
+            });
+            
+        // Fetch and display accounts
+        fetch('/api/accounts')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let accountsHtml = '<ul class="list-group">';
+                    data.accounts.forEach(account => {
+                        accountsHtml += `
+                            <li class="list-group-item">
+                                <strong>${account.email_address}</strong><br>
+                                <small>IMAP: ${account.imap_server}<br>
+                                Last checked: ${account.last_checked}</small>
+                            </li>
+                        `;
+                    });
+                    accountsHtml += '</ul>';
+                    document.getElementById('accounts-info').innerHTML = accountsHtml;
+                } else {
+                    document.getElementById('accounts-info').innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('accounts-info').innerHTML = `<p class="text-danger">Error loading accounts: ${error}</p>`;
+            });
+            
+        // Fetch and display unprocessed emails
+        function loadEmails(processed = false, containerId) {
+            const url = `/api/emails?processed=${processed}&limit=20`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let emailsHtml = '';
+                        if (data.emails.length === 0) {
+                            emailsHtml = '<p class="text-muted">No emails found.</p>';
+                        } else {
+                            data.emails.forEach(email => {
+                                // Determine importance class
+                                let importanceClass = 'importance-low';
+                                if (email.importance >= 0.7) {
+                                    importanceClass = 'importance-high';
+                                } else if (email.importance >= 0.4) {
+                                    importanceClass = 'importance-medium';
+                                }
+                                
+                                // Determine category class
+                                let categoryClass = '';
+                                if (email.category) {
+                                    categoryClass = `category-${email.category}`;
+                                }
+                                
+                                emailsHtml += `
+                                    <div class="card email-card mb-3 ${importanceClass} ${categoryClass}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${email.subject || 'No Subject'}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">From: ${email.from}</h6>
+                                            <p class="card-text">${email.summary || 'No summary available'}</p>
+                                            <div class="d-flex justify-content-between">
+                                                <small class="text-muted">Date: ${email.date}</small>
+                                                <small class="text-muted">Importance: ${(email.importance * 100).toFixed(0)}%</small>
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-2">
+                                                <span class="badge bg-primary">${email.category || 'other'}</span>
+                                                <span class="badge bg-secondary">${email.action || 'read'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        document.getElementById(containerId).innerHTML = emailsHtml;
+                    } else {
+                        document.getElementById(containerId).innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById(containerId).innerHTML = `<p class="text-danger">Error loading emails: ${error}</p>`;
+                });
+        }
+        
+        // Load emails when tabs are shown
+        document.getElementById('unprocessed-tab').addEventListener('shown.bs.tab', function (event) {
+            loadEmails(false, 'unprocessed-emails');
+        });
+        
+        document.getElementById('processed-tab').addEventListener('shown.bs.tab', function (event) {
+            loadEmails(true, 'processed-emails');
+        });
+        
+        // Initial load
+        loadEmails(false, 'unprocessed-emails');
+    </script>
+</body>
+</html>

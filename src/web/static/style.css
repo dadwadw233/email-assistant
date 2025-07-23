@@ -1,0 +1,53 @@
+/* Custom styles for the Email Assistant Dashboard */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.email-card {
+    transition: all 0.3s ease;
+}
+
+.email-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.importance-high {
+    border-left: 4px solid #dc3545;
+}
+
+.importance-medium {
+    border-left: 4px solid #ffc107;
+}
+
+.importance-low {
+    border-left: 4px solid #28a745;
+}
+
+.category-work {
+    background-color: #e9ecef;
+}
+
+.category-personal {
+    background-color: #fff3cd;
+}
+
+.category-newsletter {
+    background-color: #d1ecf1;
+}
+
+.category-spam {
+    background-color: #f8d7da;
+}

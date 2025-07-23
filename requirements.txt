@@ -1,0 +1,23 @@
+# Core dependencies
+imaplib2>=3.6
+email-validator>=1.3
+python-dateutil>=2.8
+
+# LLM API clients
+openai>=1.0.0
+anthropic>=0.3.0
+google-generativeai>=0.3.0
+
+# Database
+sqlalchemy>=2.0.0
+
+# Web framework
+flask>=2.3.0
+
+# Utilities
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=7.0.0
+pytest-mock>=3.10.0

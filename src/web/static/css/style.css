@@ -1,0 +1,34 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1rem;
+}
+
+.email-card {
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s;
+}
+
+.email-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.importance-high {
+    border-left-color: #dc3545;
+}
+
+.importance-medium {
+    border-left-color: #ffc107;
+}
+
+.importance-low {
+    border-left-color: #28a745;
+}
+
+.category-badge {
+    font-size: 0.75rem;
+}

@@ -1,0 +1,13 @@
+{
+  "project_name": "email-assistant",
+  "version": "0.1.0",
+  "author": "Your Name",
+  "description": "Personal Email Management Assistant",
+  "dependencies": {
+    "python": ">=3.8",
+    "imaplib": null,
+    "email": null,
+    "openai": null,
+    "sqlite3": null
+  }
+}
