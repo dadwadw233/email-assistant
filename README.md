@@ -187,7 +187,7 @@ This will attempt to connect to your Gmail account and fetch a few unread emails
 
 ## Web Interface
 
-The application includes a web dashboard for viewing email analysis results:
+The application includes a modern web dashboard for viewing email analysis results:
 
 1. Start the web interface:
    ```bash
@@ -196,11 +196,22 @@ The application includes a web dashboard for viewing email analysis results:
 
 2. Open your browser and navigate to `http://localhost:5000`
 
-The dashboard shows:
-- Email accounts configuration
-- Unprocessed emails with importance indicators
-- Email categories and recommended actions
-- Application configuration details
+The dashboard features:
+- Clean, responsive design with Bootstrap 5
+- Real-time email visualization with importance indicators
+- Color-coded email categories (work, personal, newsletter, spam)
+- Automatic refresh of unprocessed emails
+- Detailed email information display
+- Configuration overview panel
+- Account management panel
+
+### Dashboard Features:
+- **Email Cards**: Each email is displayed in a card with color-coded borders indicating importance (red=high, yellow=medium, green=low)
+- **Category Badges**: Clear visual indicators for email categories with appropriate icons
+- **Action Recommendations**: Displays recommended actions for each email
+- **Tabbed Interface**: Switch between unprocessed and processed emails
+- **Responsive Design**: Works well on desktop and mobile devices
+- **Auto-refresh**: Unprocessed emails automatically refresh every 30 seconds
 
 ## Troubleshooting
 
@@ -223,3 +234,20 @@ python main.py --verbose
 ```
 
 Check the log file `email_assistant.log` for detailed error messages.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Special Thanks
+
+We would like to acknowledge the contributions of AI assistants in the development of this project:
+
+- **Qwen** (通义千问): Provided guidance on architecture design, helped implement LLM integration, and assisted with code improvements throughout the development process.
+- **Gemini**: Helped with frontend design concepts and implementation details.
+
+Their contributions have been invaluable in creating a robust and user-friendly email management assistant.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
